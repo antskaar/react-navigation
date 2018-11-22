@@ -270,7 +270,12 @@ class CardStack extends React.Component {
     const { index } = navigation.state;
     const isVertical = mode === 'modal';
     const { options } = this._getScreenDetails(scene);
-    const gestureDirectionInverted = options.gestureDirection === 'inverted';
+
+    const gestureDirection = options.gestureDirection
+    const gestureDirectionInverted =
+      typeof gestureDirection === 'string'
+        ? gestureDirection === 'inverted'
+        : I18nManager.isRTL;
 
     const gesturesEnabled =
       typeof options.gesturesEnabled === 'boolean'
@@ -339,7 +344,7 @@ class CardStack extends React.Component {
               ? layout.height.__getValue()
               : layout.width.__getValue();
             const currentValue =
-              (I18nManager.isRTL && axis === 'dx') !== gestureDirectionInverted
+              axis === 'dx' && gestureDirectionInverted
                 ? startValue + gesture[axis] / axisDistance
                 : startValue - gesture[axis] / axisDistance;
             const value = clamp(index - 1, currentValue, index);
